@@ -6,7 +6,7 @@ func main() {
 	var n int
 	fmt.Print("Till which digit you want the prime numbers to be printed: ")
 	fmt.Scan(&n)
-	primes := make([]bool, 40)
+	primes := make([]bool, n+1)
 	prime(n, 2, 4, primes)
 	fmt.Print("-->")
 	printingPrimes(n, 2, primes)
