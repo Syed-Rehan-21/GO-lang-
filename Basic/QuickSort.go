@@ -27,7 +27,7 @@ func Sort(low, high int, arr []int) {
 	}
 }
 func Partition(low, high int, arr []int) int {
-	pivot := arr[high] // Let, pivot is the last element
+	pivot := arr[high] // Let, pivot be the last element
 	i := low - 1
 	index := Arranging(pivot, i, low, high, arr)
 	Swap(index+1, high, arr)
