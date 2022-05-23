@@ -106,7 +106,7 @@ func IsSafe(Puzzle [][]int, row, col, num int) bool {
 	}
 	rowStart := row - row%3
 	colStart := col - col%3
-	return BoxCheck(rowStart, colStart, row, col, num, Puzzle)
+	return BoxCheck(rowStart, colStart, rowStart, colStart, num, Puzzle)
 }
 func Display(Puzzle [][]int, r, c int) {
 	if r > len(Puzzle)-1 {
