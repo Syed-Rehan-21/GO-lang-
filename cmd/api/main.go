@@ -1,3 +1,8 @@
+// @title Product API
+// @version 1.0
+// @description API for managing products
+// @host localhost:8080
+// @BasePath /api
 package main
 
 import (
@@ -51,15 +56,34 @@ func main() {
     handler := handlers.NewProductHandler(service, logger)
 
     // Define routes
-    router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    router.HandleFunc("/", 
+    // @Summary Root endpoint
+    // @Description Returns a simple welcome message to verify the server is running.
+    // @Tags root
+    // @Produce json
+    // @Success 200 {object} map[string]string "Welcome message"
+    // @Router / [get]
+    func(w http.ResponseWriter, r *http.Request) {
         w.Header().Set("Content-Type", "application/json")
         w.WriteHeader(http.StatusOK)
         fmt.Fprintln(w, `{"message": "Hello Go"}`)
     }).Methods("GET")
 
-    router.HandleFunc("/products", handler.GetAllProductsHandler).Methods("GET")
-    router.HandleFunc("/products/{id}", handler.GetProductByIDHandler).Methods("GET")
+    // Create API subrouter
+    apiRouter := router.PathPrefix("/api").Subrouter()
 
+    // Define API routes
+    apiRouter.HandleFunc("/products", handler.GetAllProductsHandler).Methods("GET")
+    apiRouter.HandleFunc("/products/{id}", handler.GetProductByIDHandler).Methods("GET")
+    apiRouter.HandleFunc("/products", handler.CreateProductHandler).Methods("POST")
+    apiRouter.HandleFunc("/products/{id}", handler.UpdateProductHandler).Methods("PUT")
+    apiRouter.HandleFunc("/products/{id}", handler.DeleteProductHandler).Methods("DELETE")
+
+    // Serve Swagger UI and OpenAPI documentation
+    fs := http.FileServer(http.Dir("./api/docs"))
+    router.PathPrefix("/api/docs/").Handler(http.StripPrefix("/api/docs/", fs))
+
+    // Start the HTTP server
     addr := fmt.Sprintf(":%s", config.APIPort)
     logger.Infof("Starting server on port %s", config.APIPort)
     if err := http.ListenAndServe(addr, router); err != nil {
